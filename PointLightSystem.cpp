@@ -1,4 +1,4 @@
-#include "RenderSystem.hpp"
+#include "PointLightSystem.hpp"
 
 #define GLM_FORCE_RADIANS
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE
@@ -10,21 +10,45 @@
 #include <cassert>
 
 namespace DedOs {
-	struct PushConstantData {
-		glm::mat4 modelMatrix{ 1.f };
-		glm::mat4 normalMatrix{ 1.f };
+	struct PointLightPushConstant {
+		glm::vec4 position{};
+		glm::vec4 color{};
+		float radius;
 	};
 
-	RenderSystem::RenderSystem(Device& device, VkRenderPass renderPass, VkDescriptorSetLayout globalSetLayout)
-		:hDevice{device}
+	PointLightSystem::PointLightSystem(Device& device, VkRenderPass renderPass, VkDescriptorSetLayout globalSetLayout)
+		:hDevice{ device }
 	{
 		createPipelineLayout(globalSetLayout);
 		createPipeline(renderPass);
 	}
-	RenderSystem::~RenderSystem()
+	PointLightSystem::~PointLightSystem()
 	{
 	}
-	void RenderSystem::renderGameObjects(FrameInfo& fInfo)
+
+	void PointLightSystem::update(FrameInfo& fInfo, UBO& ubo) {
+		int lightIndex = 0;
+		auto rotateLight = glm::rotate(
+			glm::mat4(1.f),
+			fInfo.deltaTime,
+			{ 0.f, -1.f, 0.f });
+
+		for (auto& kv: fInfo.gameObjects)
+		{
+			auto& obj = kv.second;
+			if (obj.pointLight == nullptr) { continue; }
+			
+			assert(lightIndex < MAX_LIGHTS && "Can't add more Point lights");
+			obj.transform.translation = glm::vec3(rotateLight * glm::vec4(obj.transform.translation, 1.f));
+			//update ubo
+			ubo.pointLights[lightIndex].position = glm::vec4(obj.transform.translation, 1.f);
+			ubo.pointLights[lightIndex].color = glm::vec4(obj.color, obj.pointLight->lightIntensity);
+
+			lightIndex++;
+		}
+		ubo.nbLights = lightIndex;
+	}
+	void PointLightSystem::render(FrameInfo& fInfo)
 	{
 		hpipeline->bind(fInfo.commandBuffer);
 
@@ -32,38 +56,38 @@ namespace DedOs {
 			fInfo.commandBuffer,
 			VK_PIPELINE_BIND_POINT_GRAPHICS,
 			pipelineLayout,
-			0,1,
+			0, 1,
 			&fInfo.globalDescriptors,
 			0,
 			nullptr
 		);
 
-		for (auto& keyValuePair : fInfo.gameObjects)
+		for (auto& kv : fInfo.gameObjects)
 		{
-			auto& obj = keyValuePair.second;
-			if(obj.model == nullptr){continue;}
-			PushConstantData push{};
-
-			push.modelMatrix = obj.transform.mat4();
-			push.normalMatrix = obj.transform.normalMatrix();
+			auto& obj = kv.second;
+			if (obj.pointLight == nullptr) { continue; }
+			PointLightPushConstant push{};
+			push.position = glm::vec4(obj.transform.translation, 1.f);
+			push.color = glm::vec4(obj.color, obj.pointLight->lightIntensity);
+			push.radius = obj.transform.scale.x;
 
 			vkCmdPushConstants(
 				fInfo.commandBuffer,
 				pipelineLayout,
 				VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT,
 				0,
-				sizeof(PushConstantData),
-				&push);
-			obj.model->bind(fInfo.commandBuffer);
-			obj.model->draw(fInfo.commandBuffer);
+				sizeof(PointLightPushConstant),
+				&push
+			);
+			vkCmdDraw(fInfo.commandBuffer, 6, 1, 0, 0);
 		}
 	}
-	void RenderSystem::createPipelineLayout(VkDescriptorSetLayout globalSetLayout)
+	void PointLightSystem::createPipelineLayout(VkDescriptorSetLayout globalSetLayout)
 	{
 		VkPushConstantRange pushConstantRange{};
 		pushConstantRange.stageFlags = VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT;
 		pushConstantRange.offset = 0;
-		pushConstantRange.size = sizeof(PushConstantData);
+		pushConstantRange.size = sizeof(PointLightPushConstant);
 
 		std::vector<VkDescriptorSetLayout> descriptorSetLayouts{ globalSetLayout };
 
@@ -80,20 +104,22 @@ namespace DedOs {
 			throw std::runtime_error("Failed to create pipeline layout");
 		}
 	}
-	void RenderSystem::createPipeline(VkRenderPass renderpass)
+	void PointLightSystem::createPipeline(VkRenderPass renderpass)
 	{
 		assert(pipelineLayout != nullptr && "Cannot create pipeline before pipeline layout");
 
 		PipelineConfigInfo pipelineConfig{};
 		Pipeline::defaultPCI(pipelineConfig);
-
+		
+		pipelineConfig.attributeDescriptions.clear();
+		pipelineConfig.bindingDescriptions.clear();
 		pipelineConfig.renderPass = renderpass;
 		pipelineConfig.pipelineLayout = pipelineLayout;
 
 		hpipeline = std::make_unique<Pipeline>(
 			hDevice,
-			"shader.vert.spv",
-			"shader.frag.spv",
+			"pointLight.vert.spv",
+			"pointLight.frag.spv",
 			pipelineConfig
 			);
 	}

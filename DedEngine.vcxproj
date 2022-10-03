@@ -29,6 +29,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Model.cpp" />
     <ClCompile Include="Pipeline.cpp" />
+    <ClCompile Include="PointLightSystem.cpp" />
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="RenderSystem.cpp" />
     <ClCompile Include="Swapchain.cpp" />
@@ -45,6 +46,7 @@
     <ClInclude Include="KeyboardController.hpp" />
     <ClInclude Include="Model.hpp" />
     <ClInclude Include="Pipeline.hpp" />
+    <ClInclude Include="PointLightSystem.hpp" />
     <ClInclude Include="Renderer.hpp" />
     <ClInclude Include="RenderSystem.hpp" />
     <ClInclude Include="Swapchain.hpp" />
@@ -52,6 +54,8 @@
     <ClInclude Include="Window.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="pointLight.frag" />
+    <None Include="pointLight.vert" />
     <None Include="shader.frag" />
     <None Include="shader.vert" />
   </ItemGroup>

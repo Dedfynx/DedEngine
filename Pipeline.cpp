@@ -95,6 +95,9 @@ namespace DedOs {
 		configInfo.dynamicStateInfo.dynamicStateCount =
 			static_cast<uint32_t>(configInfo.dynamicStateEnables.size());
 		configInfo.dynamicStateInfo.flags = 0;
+
+		configInfo.attributeDescriptions = Model::Vertex::getAttributeDescriptions();
+		configInfo.bindingDescriptions = Model::Vertex::getBindDescriptions();
 		
 	}
 	std::vector<char> Pipeline::readFile(const std::string filePath)
@@ -141,8 +144,8 @@ namespace DedOs {
 		shaderStage[1].pNext = nullptr;
 		shaderStage[1].pSpecializationInfo = nullptr;
 
-		auto attributeDescriptions = Model::Vertex::getAttributeDescriptions();
-		auto bindingDescriptions = Model::Vertex::getBindDescriptions();
+		auto& attributeDescriptions = pci.attributeDescriptions;
+		auto& bindingDescriptions = pci.bindingDescriptions;
 
 		VkPipelineVertexInputStateCreateInfo vertexInputInfo{};
 		vertexInputInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;

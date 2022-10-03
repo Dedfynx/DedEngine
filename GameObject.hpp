@@ -16,6 +16,11 @@ namespace  DedOs {
 		glm::mat4 mat4();
 		glm::mat3 normalMatrix();
 	};
+
+	struct PointLightComponent {
+		float lightIntensity = 1.0f;
+	};
+
 	class GameObject
 	{
 	public:
@@ -32,9 +37,23 @@ namespace  DedOs {
 		GameObject(GameObject&&) = default;
 		GameObject& operator=(GameObject&&) = default;
 
-		std::shared_ptr<Model> model{};
 		glm::vec3 color{};
 		TransformComponent transform{};
+
+		//ECS pas encore implementé
+		std::shared_ptr<Model> model{};
+		std::unique_ptr<PointLightComponent> pointLight = nullptr;
+
+		//!!
+		static GameObject makePointLight(float intensity = 10.f, float radius = 0.1f, glm::vec3 color = glm::vec3(1.f)) {
+			GameObject obj = GameObject::createGameObject();
+			obj.color = color;
+			obj.transform.scale.x = radius;
+			obj.pointLight = std::make_unique<PointLightComponent>();
+			obj.pointLight->lightIntensity = intensity;
+
+			return obj;
+		}
 
 		id_t getId() { return id; }
 

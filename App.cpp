@@ -1,27 +1,7 @@
 #include "App.hpp"
-#include "Camera.hpp"
-#include "KeyboardController.hpp"
-#include "Buffer.hpp"
-
-#define GLM_FORCE_RADIANS
-#define GLM_FORCE_DEPTH_ZERO_TO_ONE
-#include <glm/glm.hpp>
-#include <glm/gtc/constants.hpp>
-
-#include <stdexcept>
-#include <array>
-#include <chrono>
 
 namespace DedOs {
-	struct UBO {
-		glm::mat4 projectionMatrix{ 1.f };
-		glm::vec4 ambientLightColor{ 1.f,1.f,1.f,.02f };//(R,G,B,Intensity)
-		//Soleil
-		//glm::vec3 lightDirection = glm::normalize(glm::vec3(1.f, -3.f, -1.f));
-		//Point Light
-		glm::vec3 lightPosition{-1.f};
-		alignas(16)glm::vec4 lightColor{1.f}; //(R,G,B,Intensity)
-	};
+	
 
 	App::App()
 	{
@@ -67,6 +47,7 @@ namespace DedOs {
 		}
 
 		RenderSystem renderSystem{ hDevice, hRenderer.getSwapchainRenderPass(), globalSetLayout->getDescriptorSetLayout() };
+		PointLightSystem pointLightSystem{ hDevice, hRenderer.getSwapchainRenderPass(), globalSetLayout->getDescriptorSetLayout() };
 		Camera camera{};
 		camera.setViewTarget(glm::vec3(-1.f, -2.f, 2.f), glm::vec3(0.f, 0.f, 2.5f));
 
@@ -86,7 +67,7 @@ namespace DedOs {
 			camera.setViewYXZ(viewerObject.transform.translation, viewerObject.transform.rotation);
 
 			float aspect = hRenderer.getAspectRatio();
-			camera.setPerspectiveProjection(glm::radians(50.f), aspect, 0.1f, 10.f);
+			camera.setPerspectiveProjection(glm::radians(50.f), aspect, 0.1f, 100.f);
 
 			if (auto commandBuffer = hRenderer.beginFrame()) {
 				int frameIndex = hRenderer.getFrameIndex();
@@ -102,12 +83,15 @@ namespace DedOs {
 				};
 				//update
 				UBO ubo{};
-				ubo.projectionMatrix = camera.getProjectionMatrix() * camera.getViewMatrix();
+				ubo.projectionMatrix = camera.getProjectionMatrix();
+				ubo.viewMatrix = camera.getViewMatrix();
+				pointLightSystem.update(fInfo, ubo);
 				uboBuffers[frameIndex]->writeToBuffer(&ubo);
 				uboBuffers[frameIndex]->flush();
 				//render
 				hRenderer.beginSwapchainRenderPass(commandBuffer);
 				renderSystem.renderGameObjects(fInfo);
+				pointLightSystem.render(fInfo);
 				hRenderer.endSwapchainRenderPass(commandBuffer);
 				hRenderer.endFrame();
 			}
@@ -134,12 +118,42 @@ namespace DedOs {
 		flatVase.transform.scale = glm::vec3{ 3.f };
 		gameObjects.emplace(flatVase.getId(),std::move(flatVase));
 
+		/*model = Model::createModelFromFile(hDevice, "models/cessna.obj");
+		auto avion = GameObject::createGameObject();
+		avion.model = model;
+		avion.transform.translation = { .0f ,-1.5f ,.0f };
+		avion.transform.rotation = { glm::pi<float>(),.0f,.0f};
+		avion.transform.scale = glm::vec3{ .1f };
+		gameObjects.emplace(avion.getId(), std::move(avion));*/
+
+
 		model = Model::createModelFromFile(hDevice, "models/quad.obj");
 		auto sol = GameObject::createGameObject();
 		sol.model = model;
 		sol.transform.translation = { .0f ,.5f ,0.f };
 		sol.transform.scale = glm::vec3{ 3.f };
 		gameObjects.emplace(sol.getId(), std::move(sol));
+		
+		std::vector<glm::vec3> lightColors{
+		  {1.f, .1f, .1f},
+		  {.1f, .1f, 1.f},
+		  {.1f, 1.f, .1f},
+		  {1.f, 1.f, .1f},
+		  {.1f, 1.f, 1.f},
+		  {1.f, 1.f, 1.f}  //
+		};
+
+		for (int i = 0; i < lightColors.size(); i++) {
+			auto pointLight = GameObject::makePointLight(0.2f);
+			pointLight.color = lightColors[i];
+			auto rotateLight = glm::rotate(
+				glm::mat4(1.f),
+				(i * glm::two_pi<float>()) / lightColors.size(),
+				{ 0.f, -1.f, 0.f });
+			pointLight.transform.translation = glm::vec3(rotateLight * glm::vec4(-1.f, -1.f, -1.f, 1.f));
+			gameObjects.emplace(pointLight.getId(), std::move(pointLight));
+		}
+
 
 
 	}
