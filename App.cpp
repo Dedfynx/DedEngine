@@ -18,6 +18,10 @@ namespace DedOs {
 	}
 	void App::run()
 	{
+		DedImgui imgui{
+			hDevice,hWin,hRenderer.getSwapchainRenderPass(),hRenderer.getImageCount()
+		};
+
 		std::vector<std::unique_ptr<Buffer>> uboBuffers( Swapchain::MAX_FRAMES_IN_FLIGHT );
 		for (size_t i = 0; i < uboBuffers.size(); i++)
 		{
@@ -59,6 +63,7 @@ namespace DedOs {
 		while (!hWin.shouldClose()) {
 			glfwPollEvents();
 
+
 			auto newTime = std::chrono::high_resolution_clock::now();
 			auto deltaTime = std::chrono::duration<float, std::chrono::seconds::period>(newTime - currentTime).count();
 			currentTime = newTime;
@@ -71,6 +76,7 @@ namespace DedOs {
 
 			if (auto commandBuffer = hRenderer.beginFrame()) {
 				int frameIndex = hRenderer.getFrameIndex();
+
 
 				//FrameInfo
 				FrameInfo fInfo{
@@ -88,10 +94,14 @@ namespace DedOs {
 				pointLightSystem.update(fInfo, ubo);
 				uboBuffers[frameIndex]->writeToBuffer(&ubo);
 				uboBuffers[frameIndex]->flush();
+
 				//render
 				hRenderer.beginSwapchainRenderPass(commandBuffer);
+				imgui.newFrame();
 				renderSystem.renderGameObjects(fInfo);
 				pointLightSystem.render(fInfo);
+				imgui.runExample();
+				imgui.render(commandBuffer);
 				hRenderer.endSwapchainRenderPass(commandBuffer);
 				hRenderer.endFrame();
 			}

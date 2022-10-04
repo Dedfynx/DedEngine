@@ -22,6 +22,7 @@ namespace DedOs {
 		void endFrame();
 
 		VkRenderPass getSwapchainRenderPass() const { return hSwapchain->getRenderPass(); };
+		uint32_t getImageCount() const { return hSwapchain->imageCount(); }
 		float getAspectRatio() const {
 			return hSwapchain->extentAspectRatio();
 		};
@@ -36,6 +37,7 @@ namespace DedOs {
 			assert(isFrameStarted && "Cannot get command buffer when frame not in progress");
 			return commandBuffers[currentFrameIndex];
 		}
+
 
 		int getFrameIndex() const {
 			assert(isFrameStarted && "Cannot get Frame Index when frame not in progress");

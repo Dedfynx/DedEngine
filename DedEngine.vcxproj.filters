@@ -16,6 +16,12 @@
     <Filter Include="Fichiers de ressources\Shaders">
       <UniqueIdentifier>{cbb2f58b-90e7-48e6-8bc8-23e8c5900456}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Fichiers d%27en-tête\Imgui">
+      <UniqueIdentifier>{1ecb61e8-33a5-48dd-8c0f-090521d36915}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fichiers sources\Imgui">
+      <UniqueIdentifier>{016244e5-b6e8-4126-a431-c930c209349d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -62,6 +68,30 @@
     </ClCompile>
     <ClCompile Include="PointLightSystem.cpp">
       <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="DedImgui.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="libs\imgui\imgui.cpp">
+      <Filter>Fichiers sources\Imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="libs\imgui\imgui_demo.cpp">
+      <Filter>Fichiers sources\Imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="libs\imgui\imgui_draw.cpp">
+      <Filter>Fichiers sources\Imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="libs\imgui\imgui_impl_glfw.cpp">
+      <Filter>Fichiers sources\Imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="libs\imgui\imgui_impl_vulkan.cpp">
+      <Filter>Fichiers sources\Imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="libs\imgui\imgui_tables.cpp">
+      <Filter>Fichiers sources\Imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="libs\imgui\imgui_widgets.cpp">
+      <Filter>Fichiers sources\Imgui</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -112,6 +142,33 @@
     </ClInclude>
     <ClInclude Include="PointLightSystem.hpp">
       <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="DedImgui.hpp">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="libs\imgui\imconfig.h">
+      <Filter>Fichiers d%27en-tête\Imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="libs\imgui\imgui.h">
+      <Filter>Fichiers d%27en-tête\Imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="libs\imgui\imgui_impl_glfw.h">
+      <Filter>Fichiers d%27en-tête\Imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="libs\imgui\imgui_impl_vulkan.h">
+      <Filter>Fichiers d%27en-tête\Imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="libs\imgui\imgui_internal.h">
+      <Filter>Fichiers d%27en-tête\Imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="libs\imgui\imstb_rectpack.h">
+      <Filter>Fichiers d%27en-tête\Imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="libs\imgui\imstb_textedit.h">
+      <Filter>Fichiers d%27en-tête\Imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="libs\imgui\imstb_truetype.h">
+      <Filter>Fichiers d%27en-tête\Imgui</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
