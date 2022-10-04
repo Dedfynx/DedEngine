@@ -13,6 +13,7 @@ namespace DedOs {
 	struct PushConstantData {
 		glm::mat4 modelMatrix{ 1.f };
 		glm::mat4 normalMatrix{ 1.f };
+		float blinnExp = 30.f;
 	};
 
 	RenderSystem::RenderSystem(Device& device, VkRenderPass renderPass, VkDescriptorSetLayout globalSetLayout)
@@ -46,6 +47,7 @@ namespace DedOs {
 
 			push.modelMatrix = obj.transform.mat4();
 			push.normalMatrix = obj.transform.normalMatrix();
+			push.blinnExp = fInfo.blinnExp;
 
 			vkCmdPushConstants(
 				fInfo.commandBuffer,

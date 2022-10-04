@@ -35,6 +35,7 @@ namespace DedOs {
 		bool show_another_window = false;
 		ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 		void runExample();
+		float f;
 
 	private:
 		void init(Window& win, VkRenderPass renderPass, uint32_t imageCount);

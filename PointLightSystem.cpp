@@ -39,7 +39,7 @@ namespace DedOs {
 			if (obj.pointLight == nullptr) { continue; }
 			
 			assert(lightIndex < MAX_LIGHTS && "Can't add more Point lights");
-			obj.transform.translation = glm::vec3(rotateLight * glm::vec4(obj.transform.translation, 1.f));
+			//obj.transform.translation = glm::vec3(rotateLight * glm::vec4(obj.transform.translation, 1.f));
 			//update ubo
 			ubo.pointLights[lightIndex].position = glm::vec4(obj.transform.translation, 1.f);
 			ubo.pointLights[lightIndex].color = glm::vec4(obj.color, obj.pointLight->lightIntensity);

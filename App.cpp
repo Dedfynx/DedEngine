@@ -87,10 +87,12 @@ namespace DedOs {
 					globalDescritorSets[frameIndex],
 					gameObjects
 				};
+				fInfo.blinnExp = imgui.f;
 				//update
 				UBO ubo{};
 				ubo.projectionMatrix = camera.getProjectionMatrix();
 				ubo.viewMatrix = camera.getViewMatrix();
+				ubo.inverseViewMatrix = camera.getInverseViewMatrix();
 				pointLightSystem.update(fInfo, ubo);
 				uboBuffers[frameIndex]->writeToBuffer(&ubo);
 				uboBuffers[frameIndex]->flush();

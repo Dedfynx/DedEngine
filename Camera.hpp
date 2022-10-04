@@ -25,8 +25,10 @@ namespace DedOs{
 
 		const glm::mat4& getProjectionMatrix() const { return projectionMatrix; }
 		const glm::mat4& getViewMatrix() const { return viewMatrix; }
+		const glm::mat4& getInverseViewMatrix() const { return inverseViewMatrix; }
 	private:
 		glm::mat4 projectionMatrix{ 1.f };
 		glm::mat4 viewMatrix{ 1.f };
+		glm::mat4 inverseViewMatrix{ 1.f };
 	};
 }
