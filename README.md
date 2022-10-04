@@ -12,8 +12,6 @@
 
 ## Features
 ### General Features
-- Keyboard input
-- Model .obj 
+-Vulkan Renderder
 
-### Graphics Features
-- Ambient Light
+
