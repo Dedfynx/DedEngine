@@ -8,6 +8,7 @@ namespace DedOs {
 		globalPool = DescriptorPool::Builder(hDevice)
 			.setMaxSets(Swapchain::MAX_FRAMES_IN_FLIGHT)
 			.addPoolSize(VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, Swapchain::MAX_FRAMES_IN_FLIGHT)
+			.addPoolSize(VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, Swapchain::MAX_FRAMES_IN_FLIGHT)
 			.build();
 
 		loadGameObjects();
@@ -37,7 +38,14 @@ namespace DedOs {
 
 		auto globalSetLayout = DescriptorSetLayout::Builder(hDevice)
 			.addBinding(0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_ALL_GRAPHICS)
+			.addBinding(1, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, VK_SHADER_STAGE_FRAGMENT_BIT)
 			.build();
+
+		Texture texture = Texture(hDevice, "textures/image.jpg");
+		VkDescriptorImageInfo imageInfo{};
+		imageInfo.sampler = texture.getSampler();
+		imageInfo.imageView = texture.getImageView();
+		imageInfo.imageLayout = texture.getImageLayout();
 
 		std::vector<VkDescriptorSet> globalDescritorSets(Swapchain::MAX_FRAMES_IN_FLIGHT);
 		for (size_t i = 0; i < globalDescritorSets.size(); i++)
@@ -45,6 +53,7 @@ namespace DedOs {
 			auto bufferInfo = uboBuffers[i]->descriptorInfo();
 			DescriptorWriter(*globalSetLayout, *globalPool)
 				.writeBuffer(0, &bufferInfo)
+				.writeImage(1, &imageInfo)
 				.build(globalDescritorSets[i]);
 
 

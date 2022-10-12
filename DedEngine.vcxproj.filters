@@ -22,6 +22,9 @@
     <Filter Include="Fichiers sources\Imgui">
       <UniqueIdentifier>{016244e5-b6e8-4126-a431-c930c209349d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Fichiers d%27en-tête\stb">
+      <UniqueIdentifier>{544fe55a-9464-46bc-9f1d-ed1737c6c4c1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -92,6 +95,9 @@
     </ClCompile>
     <ClCompile Include="libs\imgui\imgui_widgets.cpp">
       <Filter>Fichiers sources\Imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="Texture.cpp">
+      <Filter>Fichiers sources</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -169,6 +175,12 @@
     </ClInclude>
     <ClInclude Include="libs\imgui\imstb_truetype.h">
       <Filter>Fichiers d%27en-tête\Imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="Texture.hpp">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="libs\stb\stb_image.hpp">
+      <Filter>Fichiers d%27en-tête\stb</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

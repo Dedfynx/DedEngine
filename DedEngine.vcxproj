@@ -41,6 +41,7 @@
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="RenderSystem.cpp" />
     <ClCompile Include="Swapchain.cpp" />
+    <ClCompile Include="Texture.cpp" />
     <ClCompile Include="Window.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -61,12 +62,14 @@
     <ClInclude Include="libs\imgui\imstb_rectpack.h" />
     <ClInclude Include="libs\imgui\imstb_textedit.h" />
     <ClInclude Include="libs\imgui\imstb_truetype.h" />
+    <ClInclude Include="libs\stb\stb_image.hpp" />
     <ClInclude Include="Model.hpp" />
     <ClInclude Include="Pipeline.hpp" />
     <ClInclude Include="PointLightSystem.hpp" />
     <ClInclude Include="Renderer.hpp" />
     <ClInclude Include="RenderSystem.hpp" />
     <ClInclude Include="Swapchain.hpp" />
+    <ClInclude Include="Texture.hpp" />
     <ClInclude Include="Utils.hpp" />
     <ClInclude Include="Window.hpp" />
   </ItemGroup>

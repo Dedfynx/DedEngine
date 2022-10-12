@@ -11,6 +11,7 @@
 #include "KeyboardController.hpp"
 #include "Buffer.hpp"
 #include "DedImgui.hpp"
+#include "Texture.hpp"
 
 #define GLM_FORCE_RADIANS
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE
