@@ -38,6 +38,7 @@ namespace DedOs{
 
 		void bind(VkCommandBuffer commandBuffer);
 		static void defaultPCI(PipelineConfigInfo& configInfo);
+		static void enableAlphaBlending(PipelineConfigInfo& configInfo);
 
 	private:
 		static std::vector<char> readFile(const std::string filePath);

@@ -8,6 +8,7 @@
 #include <stdexcept>
 #include <array>
 #include <cassert>
+#include <map>
 
 namespace DedOs {
 	struct PointLightPushConstant {
@@ -50,6 +51,17 @@ namespace DedOs {
 	}
 	void PointLightSystem::render(FrameInfo& fInfo)
 	{
+		std::map<float, GameObject::id_t> sorted;
+		for (auto& kv : fInfo.gameObjects) {
+			auto& obj = kv.second;
+			if (obj.pointLight == nullptr) continue;
+
+			// calculate distance
+			auto offset = fInfo.hCamera.getPosition() - obj.transform.translation;
+			float disSquared = glm::dot(offset, offset);
+			sorted[disSquared] = obj.getId();
+		}
+
 		hpipeline->bind(fInfo.commandBuffer);
 
 		vkCmdBindDescriptorSets(
@@ -62,10 +74,10 @@ namespace DedOs {
 			nullptr
 		);
 
-		for (auto& kv : fInfo.gameObjects)
+		for (auto it = sorted.rbegin(); it != sorted.rend(); ++it)
 		{
-			auto& obj = kv.second;
-			if (obj.pointLight == nullptr) { continue; }
+			auto& obj = fInfo.gameObjects.at(it->second);
+
 			PointLightPushConstant push{};
 			push.position = glm::vec4(obj.transform.translation, 1.f);
 			push.color = glm::vec4(obj.color, obj.pointLight->lightIntensity);
@@ -110,6 +122,7 @@ namespace DedOs {
 
 		PipelineConfigInfo pipelineConfig{};
 		Pipeline::defaultPCI(pipelineConfig);
+		Pipeline::enableAlphaBlending(pipelineConfig);
 		
 		pipelineConfig.attributeDescriptions.clear();
 		pipelineConfig.bindingDescriptions.clear();

@@ -49,7 +49,7 @@ void main(){
 		float blinnTerm = dot(surfaceNormal, halfAngle);
 		blinnTerm = clamp(blinnTerm, 0,1);
 		blinnTerm = pow(blinnTerm, push.blinnExp);
-		specularLight += l.color.xyz * intensity * blinnTerm;
+		specularLight += intensity * blinnTerm;
 
 	}
 
